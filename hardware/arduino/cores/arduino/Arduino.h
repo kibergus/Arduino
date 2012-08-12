@@ -11,10 +11,6 @@
 
 #include "binary.h"
 
-#ifdef __cplusplus
-extern "C"{
-#endif
-
 #define HIGH 0x1
 #define LOW  0x0
 
@@ -56,6 +52,41 @@ extern "C"{
 #define EXTERNAL 0
 #endif
 
+#ifdef __cplusplus
+
+#include <algorithm>
+using std::min;
+using std::max;
+using std::abs;
+
+template<typename T>
+inline T constrain(const T& amt, const T& low, const T& high) {
+    return std::min(std::max(amt, low), high);
+}
+
+inline float radians(float deg) {
+    return deg * DEG_TO_RAD;
+}
+
+inline double radians(double deg) {
+    return deg * DEG_TO_RAD;
+}
+
+inline float degrees(float deg) {
+    return deg * RAD_TO_DEG;
+}
+
+inline double degrees(double deg) {
+    return deg * RAD_TO_DEG;
+}
+
+/// This one requires C++11 sintax
+template<typename Tp>
+inline auto sq(const Tp& x) -> decltype(x * x) {
+    return x * x;
+}
+#else // __cplusplus
+
 // undefine stdlib's abs if encountered
 #ifdef abs
 #undef abs
@@ -69,6 +100,9 @@ extern "C"{
 #define radians(deg) ((deg)*DEG_TO_RAD)
 #define degrees(rad) ((rad)*RAD_TO_DEG)
 #define sq(x) ((x)*(x))
+
+#endif // __cplusplus
+
 
 #define interrupts() sei()
 #define noInterrupts() cli()
@@ -85,6 +119,9 @@ extern "C"{
 #define bitClear(value, bit) ((value) &= ~(1UL << (bit)))
 #define bitWrite(value, bit, bitvalue) (bitvalue ? bitSet(value, bit) : bitClear(value, bit))
 
+#ifdef __cplusplus
+extern "C"{
+#endif
 
 typedef unsigned int word;
 
